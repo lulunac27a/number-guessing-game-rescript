@@ -4,7 +4,7 @@ This project is a number guessing game written in ReScript language. It uses Rea
 
 ### Getting Started
 
-Build Rescript first:
+Build ReScript first:
 ```sh
 npm run res:build
 ```
