@@ -57,7 +57,7 @@ let make = () => {
     <br />
     <p>
       {React.string("Guesses Left: ")}
-      <span id="attempts"> {React.string(Int.toString(attempts))} </span>
+      <span id="attempts"> {React.string(Int.toString(maxAttempts - attempts))} </span>
     </p>
     <p>
       {React.string("Level: ")}
