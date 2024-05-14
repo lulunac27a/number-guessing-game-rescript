@@ -16,6 +16,7 @@ let make = () => {
     //update guess value when key is pressed
     let guessValue = Js.Float.fromString(ReactEvent.Form.currentTarget(evt)["value"])
     if Js.Float.toString(guessValue) != "NaN" || Js.Float.toString(guessValue) != "" {
+      //if guess value is a valid number
       setGuess(guess => int_of_float(guessValue)) //set guess value to value of text input for guess
     }
   }
