@@ -1,4 +1,4 @@
-# Number Guessing Game in ReScript
+# Number Guessing Game in ReScript using React
 
 This project is a number guessing game written in ReScript language. It uses React to generate HTML code, Tailwind CSS to use beautiful CSS styles and Vite for web server templates. It supports levels that increases the maximum number to guess for higher levels. 
 
