@@ -1,4 +1,5 @@
 let randomInt = (minimum: float, maximum: float) =>
+  //get random integer
   Math.floor(Math.random() *. (maximum -. minimum +. 1.0)) +. minimum
 @react.component
 let make = () => {
@@ -26,8 +27,10 @@ let make = () => {
     if guess != secret {
       //if guess is not equal to secret number
       if guess > secret {
+        //too high
         setFeedback(feedback => "Too high!")
       } else if guess < secret {
+        //too low
         setFeedback(feedback => "Too low!")
       }
       setAttempts(attempts => attempts + 1) //increase attempts by 1
