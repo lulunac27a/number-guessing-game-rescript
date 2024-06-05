@@ -1,5 +1,5 @@
-let randomInt = (min, max) =>
-  Math.floor(Math.random() *. Float.fromInt(max - min + 1)) +. Float.fromInt(min)
+let randomInt = (minimum: float, maximum: float) =>
+  Math.floor(Math.random() *. (maximum -. minimum +. 1.0)) +. minimum
 @react.component
 let make = () => {
   let (level, setLevel) = React.useState(() => 1) //set initial level to 1
@@ -7,9 +7,9 @@ let make = () => {
   let (maxAttempts, setMaxAttempts) = React.useState(() =>
     int_of_float(Math.round(float_of_int(level) *. 0.5))
   )
-  let (guess, setGuess) = React.useState(() => 0) //set initial guess value to 0
+  let (guess, setGuess) = React.useState(() => float_of_int(0)) //set initial guess value to 0
   let (maxGuess, setMaxGuess) = React.useState(() => 2.0 ** float_of_int(level)) //set max guess value to 2 raised to level
-  let (secret, setSecret) = React.useState(() => randomInt(1, int_of_float(maxGuess))) //set secret value to random integer from 1 to max guess value
+  let (secret, setSecret) = React.useState(() => randomInt(float_of_int(1), maxGuess)) //set secret value to random integer from 1 to max guess value
   let (feedback, setFeedback) = React.useState(() => "") //set initial feedback to empty string
 
   let updateGuess = evt => {
@@ -17,17 +17,17 @@ let make = () => {
     let guessValue = Js.Float.fromString(ReactEvent.Form.currentTarget(evt)["value"])
     if Js.Float.toString(guessValue) != "NaN" || Js.Float.toString(guessValue) != "" {
       //if guess value is a valid number
-      setGuess(guess => int_of_float(guessValue)) //set guess value to value of text input for guess
+      setGuess(guess => guessValue) //set guess value to value of text input for guess
     }
   }
 
   let checkGuess = evt => {
     //check if guess is equal to secret number
-    if guess != int_of_float(secret) {
+    if guess != secret {
       //if guess is not equal to secret number
-      if guess > int_of_float(secret) {
+      if guess > secret {
         setFeedback(feedback => "Too high!")
-      } else if guess < int_of_float(secret) {
+      } else if guess < secret {
         setFeedback(feedback => "Too low!")
       }
       setAttempts(attempts => attempts + 1) //increase attempts by 1
@@ -36,9 +36,9 @@ let make = () => {
         setLevel(level => 1)
         setAttempts(attempts => 0)
         setMaxAttempts(maxAttempts => int_of_float(Math.round(float_of_int(level) *. 0.5)))
-        setGuess(guess => 0)
+        setGuess(guess => float_of_int(0))
         setMaxGuess(maxGuess => 2.0 ** float_of_int(level))
-        setSecret(secret => randomInt(1, int_of_float(maxGuess)))
+        setSecret(secret => randomInt(float_of_int(1), maxGuess))
         setFeedback(feedback => "Game over!")
       }
     } else {
@@ -47,7 +47,7 @@ let make = () => {
       setAttempts(attempts => 0)
       setMaxAttempts(maxAttempts => int_of_float(Math.round(float_of_int(level) *. 0.5)))
       setMaxGuess(maxGuess => 2.0 ** float_of_int(level))
-      setSecret(secret => randomInt(1, int_of_float(maxGuess)))
+      setSecret(secret => randomInt(float_of_int(1), maxGuess))
       setFeedback(feedback => "You guessed correctly!")
     }
   }
