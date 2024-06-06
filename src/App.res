@@ -37,7 +37,12 @@ let make = () => {
         setFeedback(feedback => "Too low!")
       }
       setLevelScore(levelScore =>
-        levelScore +. maxGuess *. Math.min(guess /. secret, secret /. guess)
+        levelScore +.
+        maxGuess *.
+        Math.min(
+          Math.max(guess, 1.0) /. Math.max(secret, 1.0),
+          Math.max(secret, 1.0) /. Math.max(guess, 1.0),
+        )
       ) //increase level score
       setAttempts(attempts => attempts + 1) //increase attempts by 1
       if attempts >= maxAttempts {
