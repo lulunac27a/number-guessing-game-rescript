@@ -1,10 +1,13 @@
-let randomInt = (minimum: float, maximum: float) =>
+let randomInt = (minimum: float, maximum: float) => {
   //get random integer
   Math.floor(Math.random() *. (maximum -. minimum +. 1.0)) +. minimum
+}
 @react.component
 let make = () => {
   let (level, setLevel) = React.useState(() => 1) //set initial level to 1
   let (attempts, setAttempts) = React.useState(() => 0) //set initial attempts to 0
+  let (score, setScore) = React.useState(() => float_of_int(0)) //set initial score to 0
+  let (levelScore, setLevelScore) = React.useState(() => float_of_int(0)) //set initial level score to 0
   let (maxAttempts, setMaxAttempts) = React.useState(() =>
     int_of_float(Math.round(float_of_int(level) *. 0.5))
   )
@@ -33,11 +36,16 @@ let make = () => {
         //too low
         setFeedback(feedback => "Too low!")
       }
+      setLevelScore(levelScore =>
+        levelScore +. maxGuess *. Math.min(guess /. secret, secret /. guess)
+      ) //increase level score
       setAttempts(attempts => attempts + 1) //increase attempts by 1
       if attempts >= maxAttempts {
         //if all attempts used reset game to initial state
         setLevel(level => 1)
         setAttempts(attempts => 0)
+        setScore(score => float_of_int(0))
+        setLevelScore(levelScore => float_of_int(0)) //set level score to 0
         setMaxAttempts(maxAttempts => int_of_float(Math.round(float_of_int(level) *. 0.5)))
         setGuess(guess => float_of_int(0))
         setMaxGuess(maxGuess => 2.0 ** float_of_int(level))
@@ -47,10 +55,20 @@ let make = () => {
     } else {
       //if guess is equal to secret number
       setLevel(level => level + 1) //increase level by 1
-      setAttempts(attempts => 0)
-      setMaxAttempts(maxAttempts => int_of_float(Math.round(float_of_int(level) *. 0.5)))
-      setMaxGuess(maxGuess => 2.0 ** float_of_int(level))
-      setSecret(secret => randomInt(float_of_int(1), maxGuess))
+      setScore(score =>
+        score +.
+        Math.round(
+          levelScore *.
+          float_of_int(maxAttempts - attempts + 1) /.
+          float_of_int(attempts + 1) *.
+          float_of_int(maxAttempts),
+        )
+      ) //increase score by level score
+      setAttempts(attempts => 0) //set attempts to 0
+      setLevelScore(levelScore => float_of_int(0)) //set level score to 0
+      setMaxAttempts(maxAttempts => int_of_float(Math.round(float_of_int(level) *. 0.5))) //increase max attempts by 0.5
+      setMaxGuess(maxGuess => 2.0 ** float_of_int(level)) //increase max guess number by double
+      setSecret(secret => randomInt(float_of_int(1), maxGuess)) //get random secret guess number
       setFeedback(feedback => "You guessed correctly!")
     }
   }
@@ -70,6 +88,10 @@ let make = () => {
     <p>
       {React.string("Level: ")}
       <span id="attempts"> {React.string(Int.toString(level))} </span>
+    </p>
+    <p>
+      {React.string("Score: ")}
+      <span id="score"> {React.string(Float.toString(score))} </span>
     </p>
     <p>
       {React.string("Feedback: ")}
