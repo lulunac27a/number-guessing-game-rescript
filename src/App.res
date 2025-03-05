@@ -59,6 +59,17 @@ let make = () => {
       }
     } else {
       //if guess is equal to secret number
+      setFeedback(feedback =>
+        "You guessed correctly! +" ++
+        Js.Float.toString(
+          Math.round(
+            (levelScore +. maxGuess) *.
+            float_of_int(maxAttempts - attempts + 1) /.
+            float_of_int(attempts + 1) *.
+            float_of_int(maxAttempts),
+          ),
+        ) ++ " points!"
+      )
       setLevel(level => level + 1) //increase level by 1
       setScore(score =>
         score +.
@@ -74,7 +85,6 @@ let make = () => {
       setMaxAttempts(maxAttempts => int_of_float(Math.round(float_of_int(level) *. 0.5))) //increase max attempts by 0.5
       setMaxGuess(maxGuess => 2.0 ** float_of_int(level)) //increase max guess number by double
       setSecret(secret => randomInt(float_of_int(1), maxGuess)) //get random secret guess number
-      setFeedback(feedback => "You guessed correctly!")
     }
   }
 
