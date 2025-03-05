@@ -74,7 +74,7 @@ let make = () => {
       setScore(score =>
         score +.
         Math.round(
-          levelScore *.
+          (levelScore +. maxGuess) *.
           float_of_int(maxAttempts - attempts + 1) /.
           float_of_int(attempts + 1) *.
           float_of_int(maxAttempts),
