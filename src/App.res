@@ -47,6 +47,7 @@ let make = () => {
       setAttempts(attempts => attempts + 1) //increase attempts by 1
       if attempts >= maxAttempts {
         //if all attempts used reset game to initial state
+        setFeedback(feedback => "Game over! Your score is " ++ Js.Float.toString(score))
         setLevel(level => 1)
         setAttempts(attempts => 0)
         setScore(score => float_of_int(0))
@@ -55,7 +56,6 @@ let make = () => {
         setGuess(guess => float_of_int(0))
         setMaxGuess(maxGuess => 2.0 ** float_of_int(level))
         setSecret(secret => randomInt(float_of_int(1), maxGuess))
-        setFeedback(feedback => "Game over!")
       }
     } else {
       //if guess is equal to secret number
