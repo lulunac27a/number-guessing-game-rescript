@@ -1,4 +1,4 @@
-let randomInt = (minimum: float, maximum: float) => {
+let randomInt = (minimum: float, maximum: float): float => {
   //get random integer
   Math.floor(Math.random() *. (maximum -. minimum +. 1.0)) +. minimum
 }
