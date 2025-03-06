@@ -42,7 +42,8 @@ let make = () => {
         Math.min(
           Math.max(guess, 1.0) /. Math.max(secret, 1.0),
           Math.max(secret, 1.0) /. Math.max(guess, 1.0),
-        )
+        ) *.
+        (1.0 -. Math.abs(secret -. guess) /. Math.max(secret, secret -. guess +. 1.0))
       ) //increase level score
       setAttempts(attempts => attempts + 1) //increase attempts by 1
       if attempts >= maxAttempts {
