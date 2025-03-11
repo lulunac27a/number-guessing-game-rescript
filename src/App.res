@@ -186,8 +186,10 @@ let make = () => {
     <h1 className="text-2xl font-bold"> {React.string("Number Guessing Game in ReScript")} </h1>
     <p> {React.string("Choose a game mode:")} </p>
     <select id="mode" value={mode} onChange={updateMode}>
-      <option value="multiplier"> {React.string("Multiplier")} </option>
-      <option value="attempts"> {React.string("Attempts")} </option>
+      <option value="multiplier">
+        {React.string("Attempts with multiplier based on level")}
+      </option>
+      <option value="attempts"> {React.string("Fixed number of attempts")} </option>
     </select>
     <br />
     <p> {React.string("Choose a difficulty level:")} </p>
