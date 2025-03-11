@@ -184,12 +184,14 @@ let make = () => {
       <option value="multiplier"> {React.string("Multiplier")} </option>
       <option value="attempts"> {React.string("Attempts")} </option>
     </select>
+    <br />
     <select id="difficulty" value={difficulty} onChange={updateDifficulty}>
       <option value="easy"> {React.string("Easy")} </option>
       <option value="medium"> {React.string("Medium")} </option>
       <option value="hard"> {React.string("Hard")} </option>
       <option value="expert"> {React.string("Expert")} </option>
     </select>
+    <br />
     <Button disabled={isGameStarted} onClick={startGame}> {React.string("Start")} </Button>
     <p> {React.string("Guess a number from 1 to " ++ Float.toString(maxGuess))} </p>
     {React.string("Guess: ")}
