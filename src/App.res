@@ -10,10 +10,14 @@ let make = () => {
   let (levelScore, setLevelScore) = React.useState(() => float_of_int(0)) //set initial level score to 0
   let (difficulty, setDifficulty) = React.useState(() => "easy") //set initial difficulty to easy
   let (difficultyMultiplier, setDifficultyMultiplier) = React.useState(() => float_of_int(1)) //set initial difficulty multiplier to 1
+  let (attemptsLimit, setAttemptsLimit) = React.useState(() => 10) //set initial attempts limit to 10
+  let (mode, setMode) = React.useState(() => "multiplier") //set initial game mode to multiplier
   let (isGameStarted, setIsGameStarted) = React.useState(() => false) //set initial is game started to false (not started)
   let (maxAttempts, setMaxAttempts) = React.useState(() =>
-    int_of_float(Math.round(float_of_int(level) *. difficultyMultiplier))
-  ) //set max attempts based on level and difficulty
+    mode == "multiplier"
+      ? int_of_float(Math.round(float_of_int(level) *. difficultyMultiplier))
+      : attemptsLimit
+  ) //set max attempts based on level, difficulty and game mode
   let (guess, setGuess) = React.useState(() => float_of_int(0)) //set initial guess value to 0
   let (maxGuess, setMaxGuess) = React.useState(() => 2.0 ** float_of_int(level)) //set max guess value to 2 raised to level
   let (secret, setSecret) = React.useState(() => randomInt(float_of_int(1), maxGuess)) //set secret value to random integer from 1 to max guess value
@@ -28,7 +32,9 @@ let make = () => {
       setScore(score => float_of_int(0))
       setLevelScore(levelScore => float_of_int(0)) //set level score to 0
       setMaxAttempts(maxAttempts =>
-        int_of_float(Math.round(float_of_int(level) *. difficultyMultiplier))
+        mode == "multiplier"
+          ? int_of_float(Math.round(float_of_int(level) *. difficultyMultiplier))
+          : attemptsLimit
       )
       setGuess(guess => float_of_int(0))
       setMaxGuess(maxGuess => 2.0 ** float_of_int(level))
@@ -50,21 +56,33 @@ let make = () => {
     let difficultyValue = ReactEvent.Form.currentTarget(evt)["value"]
     switch difficultyValue {
     //set difficulty to value of difficulty selection
-    | "easy" => {
+    | "easy" =>
+      if mode == "multiplier" {
         setDifficulty(_ => "easy")
         setDifficultyMultiplier(_ => 1.0)
+      } else {
+        setAttemptsLimit(_ => 10)
       }
-    | "medium" => {
+    | "medium" =>
+      if mode == "multiplier" {
         setDifficulty(_ => "medium")
         setDifficultyMultiplier(_ => 0.75)
+      } else {
+        setAttemptsLimit(_ => 8)
       }
-    | "hard" => {
+    | "hard" =>
+      if mode == "multiplier" {
         setDifficulty(_ => "hard")
         setDifficultyMultiplier(_ => 0.5)
+      } else {
+        setAttemptsLimit(_ => 5)
       }
-    | "expert" => {
+    | "expert" =>
+      if mode == "multiplier" {
         setDifficulty(_ => "expert")
         setDifficultyMultiplier(_ => 0.25)
+      } else {
+        setAttemptsLimit(_ => 3)
       }
     | _ => {
         setDifficulty(_ => "easy")
@@ -73,6 +91,16 @@ let make = () => {
     }
   }
 
+  let updateMode = evt => {
+    //update game mode when mode selection is changed
+    let modeValue = ReactEvent.Form.currentTarget(evt)["value"]
+    switch modeValue {
+    //set mode to value of mode selection
+    | "multiplier" => setMode(_ => "multiplier")
+    | "attempts" => setMode(_ => "attempts")
+    | _ => setMode(_ => "multiplier")
+    }
+  }
   let checkGuess = evt => {
     //check if guess is equal to secret number
     if guess != secret {
@@ -106,7 +134,9 @@ let make = () => {
         setScore(score => float_of_int(0))
         setLevelScore(levelScore => float_of_int(0)) //set level score to 0
         setMaxAttempts(maxAttempts =>
-          int_of_float(Math.round(float_of_int(level) *. difficultyMultiplier))
+          mode == "multiplier"
+            ? int_of_float(Math.round(float_of_int(level) *. difficultyMultiplier))
+            : attemptsLimit
         )
         setGuess(guess => float_of_int(0))
         setMaxGuess(maxGuess => 2.0 ** float_of_int(level))
@@ -139,8 +169,10 @@ let make = () => {
       setAttempts(attempts => 0) //set attempts to 0
       setLevelScore(levelScore => float_of_int(0)) //set level score to 0
       setMaxAttempts(maxAttempts =>
-        int_of_float(Math.round(float_of_int(level) *. difficultyMultiplier))
-      ) //increase max attempts based on difficulty
+        mode == "multiplier"
+          ? int_of_float(Math.round(float_of_int(level) *. difficultyMultiplier))
+          : attemptsLimit
+      ) //increase max attempts based on difficulty for multiplier game mode and set fixed number of attempts for attempts mode
       setMaxGuess(maxGuess => 2.0 ** float_of_int(level)) //increase max guess number by double
       setSecret(secret => randomInt(float_of_int(1), maxGuess)) //get random secret guess number
     }
@@ -148,13 +180,17 @@ let make = () => {
 
   <div className="p-4">
     <h1 className="text-2xl font-bold"> {React.string("Number Guessing Game in ReScript")} </h1>
+    <select id="mode" value={mode} onChange={updateMode}>
+      <option value="multiplier"> {React.string("Multiplier")} </option>
+      <option value="attempts"> {React.string("Attempts")} </option>
+    </select>
     <select id="difficulty" value={difficulty} onChange={updateDifficulty}>
       <option value="easy"> {React.string("Easy")} </option>
       <option value="medium"> {React.string("Medium")} </option>
       <option value="hard"> {React.string("Hard")} </option>
       <option value="expert"> {React.string("Expert")} </option>
     </select>
-    <Button onClick={startGame} disabled={isGameStarted}> {React.string("Start")} </Button>
+    <Button disabled={isGameStarted} onClick={startGame}> {React.string("Start")} </Button>
     <p> {React.string("Guess a number from 1 to " ++ Float.toString(maxGuess))} </p>
     {React.string("Guess: ")}
     <NumberInput id="guess" min="1" max={Float.toString(maxGuess)} onChange={updateGuess} />
