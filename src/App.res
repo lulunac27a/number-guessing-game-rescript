@@ -57,6 +57,7 @@ let make = () => {
     switch difficultyValue {
     //set difficulty to value of difficulty selection
     | "easy" =>
+      //easy difficulty
       if mode == "multiplier" {
         setDifficulty(_ => "easy")
         setDifficultyMultiplier(_ => 1.0)
@@ -64,6 +65,7 @@ let make = () => {
         setAttemptsLimit(_ => 10)
       }
     | "medium" =>
+      //medium difficulty
       if mode == "multiplier" {
         setDifficulty(_ => "medium")
         setDifficultyMultiplier(_ => 0.75)
@@ -71,6 +73,7 @@ let make = () => {
         setAttemptsLimit(_ => 8)
       }
     | "hard" =>
+      //hard difficulty
       if mode == "multiplier" {
         setDifficulty(_ => "hard")
         setDifficultyMultiplier(_ => 0.5)
@@ -78,6 +81,7 @@ let make = () => {
         setAttemptsLimit(_ => 5)
       }
     | "expert" =>
+      //expert difficulty
       if mode == "multiplier" {
         setDifficulty(_ => "expert")
         setDifficultyMultiplier(_ => 0.25)
