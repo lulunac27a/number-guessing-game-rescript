@@ -209,11 +209,11 @@ let make = () => {
     <br />
     <p>
       {React.string("Guesses Left: ")}
-      <span id="attempts"> {React.string(Int.toString(maxAttempts - attempts))} </span>
+      <span id="attempts-left"> {React.string(Int.toString(maxAttempts - attempts))} </span>
     </p>
     <p>
       {React.string("Level: ")}
-      <span id="attempts"> {React.string(Int.toString(level))} </span>
+      <span id="level"> {React.string(Int.toString(level))} </span>
     </p>
     <p>
       {React.string("Score: ")}
@@ -221,7 +221,7 @@ let make = () => {
     </p>
     <p>
       {React.string("Feedback: ")}
-      <span id="attempts"> {React.string(feedback)} </span>
+      <span id="feedback"> {React.string(feedback)} </span>
     </p>
   </div>
 }
