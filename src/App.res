@@ -107,7 +107,7 @@ let make = () => {
   }
   let checkGuess = evt => {
     //check if guess is equal to secret number
-    if Js.Float.isFinite(guess) {
+    if Js.Float.isFinite(guess) && guess == Math.floor(guess) {
       //if guess is a valid number
       if guess >= 1.0 && guess <= maxGuess {
         //if guess is within range
