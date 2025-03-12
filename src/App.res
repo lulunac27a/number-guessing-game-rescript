@@ -107,78 +107,84 @@ let make = () => {
   }
   let checkGuess = evt => {
     //check if guess is equal to secret number
-    if guess != secret {
-      //if guess is not equal to secret number
-      if guess > secret {
-        //too high
-        setFeedback(feedback => "Too high!")
-      } else if guess < secret {
-        //too low
-        setFeedback(feedback => "Too low!")
+    if Js.Float.isFinite(guess) {
+      //if guess is a valid number
+      if guess >= 1.0 && guess <= maxGuess {
+        //if guess is within range
+        if guess != secret {
+          //if guess is not equal to secret number
+          if guess > secret {
+            //too high
+            setFeedback(feedback => "Too high!")
+          } else if guess < secret {
+            //too low
+            setFeedback(feedback => "Too low!")
+          }
+          setLevelScore(levelScore =>
+            levelScore +.
+            maxGuess *.
+            Math.min(
+              Math.max(guess, 1.0) /. Math.max(secret, 1.0),
+              Math.max(secret, 1.0) /. Math.max(guess, 1.0),
+            ) *.
+            (1.0 -. Math.abs(secret -. guess) /. Math.max(secret, secret -. guess +. 1.0)) *. (
+              guess < secret
+                ? guess /. secret
+                : (maxGuess -. guess +. 1.0) /. (maxGuess -. secret +. 1.0)
+            )
+          ) //increase level score
+          setAttempts(attempts => attempts + 1) //increase attempts by 1
+          if attempts >= maxAttempts {
+            //if all attempts used reset game to initial state
+            setFeedback(feedback => "Game over! Your score is " ++ Js.Float.toString(score) ++ ".")
+            setMaxAttempts(maxAttempts =>
+              mode == "multiplier"
+                ? int_of_float(Math.round(float_of_int(1) *. difficultyMultiplier))
+                : attemptsLimit
+            )
+            setMaxGuess(maxGuess => 2.0 ** float_of_int(1))
+            setLevel(level => 1)
+            setAttempts(attempts => 0)
+            setScore(score => float_of_int(0))
+            setLevelScore(levelScore => float_of_int(0)) //set level score to 0
+            setGuess(guess => float_of_int(0))
+            setSecret(secret => randomInt(float_of_int(1), float_of_int(2)))
+            setIsGameStarted(isGameStarted => false) //set is game started to false
+          }
+        } else {
+          //if guess is equal to secret number
+          setFeedback(feedback =>
+            "You guessed correctly! +" ++
+            Js.Float.toString(
+              Math.round(
+                (levelScore +. maxGuess) *.
+                float_of_int(maxAttempts - attempts + 1) /.
+                float_of_int(attempts + 1) *.
+                float_of_int(maxAttempts),
+              ),
+            ) ++ " points!"
+          )
+          setSecret(secret => randomInt(float_of_int(1), maxGuess *. 2.0)) //get random secret guess number
+          setScore(score =>
+            score +.
+            Math.round(
+              (levelScore +. maxGuess) *.
+              float_of_int(maxAttempts - attempts + 1) /.
+              float_of_int(attempts + 1) *.
+              float_of_int(maxAttempts),
+            )
+          ) //increase score by level score
+          setMaxGuess(maxGuess => 2.0 ** float_of_int(level + 1)) //increase max guess number by double
+          setMaxAttempts(maxAttempts =>
+            mode == "multiplier"
+              ? int_of_float(Math.round(float_of_int(level + 1) *. difficultyMultiplier))
+              : attemptsLimit
+          ) //increase max attempts based on difficulty for multiplier game mode and set fixed number of attempts for attempts mode
+          setLevel(level => level + 1) //increase level by 1
+          setAttempts(attempts => 0) //set attempts to 0
+          setLevelScore(levelScore => float_of_int(0)) //set level score to 0
+        }
       }
-      setLevelScore(levelScore =>
-        levelScore +.
-        maxGuess *.
-        Math.min(
-          Math.max(guess, 1.0) /. Math.max(secret, 1.0),
-          Math.max(secret, 1.0) /. Math.max(guess, 1.0),
-        ) *.
-        (1.0 -. Math.abs(secret -. guess) /. Math.max(secret, secret -. guess +. 1.0)) *. (
-          guess < secret
-            ? guess /. secret
-            : (maxGuess -. guess +. 1.0) /. (maxGuess -. secret +. 1.0)
-        )
-      ) //increase level score
-      setAttempts(attempts => attempts + 1) //increase attempts by 1
-      if attempts >= maxAttempts {
-        //if all attempts used reset game to initial state
-        setFeedback(feedback => "Game over! Your score is " ++ Js.Float.toString(score) ++ ".")
-        setMaxAttempts(maxAttempts =>
-          mode == "multiplier"
-            ? int_of_float(Math.round(float_of_int(1) *. difficultyMultiplier))
-            : attemptsLimit
-        )
-        setMaxGuess(maxGuess => 2.0 ** float_of_int(1))
-        setLevel(level => 1)
-        setAttempts(attempts => 0)
-        setScore(score => float_of_int(0))
-        setLevelScore(levelScore => float_of_int(0)) //set level score to 0
-        setGuess(guess => float_of_int(0))
-        setSecret(secret => randomInt(float_of_int(1), float_of_int(2)))
-        setIsGameStarted(isGameStarted => false) //set is game started to false
-      }
-    } else {
-      //if guess is equal to secret number
-      setFeedback(feedback =>
-        "You guessed correctly! +" ++
-        Js.Float.toString(
-          Math.round(
-            (levelScore +. maxGuess) *.
-            float_of_int(maxAttempts - attempts + 1) /.
-            float_of_int(attempts + 1) *.
-            float_of_int(maxAttempts),
-          ),
-        ) ++ " points!"
-      )
-      setSecret(secret => randomInt(float_of_int(1), maxGuess *. 2.0)) //get random secret guess number
-      setScore(score =>
-        score +.
-        Math.round(
-          (levelScore +. maxGuess) *.
-          float_of_int(maxAttempts - attempts + 1) /.
-          float_of_int(attempts + 1) *.
-          float_of_int(maxAttempts),
-        )
-      ) //increase score by level score
-      setMaxGuess(maxGuess => 2.0 ** float_of_int(level + 1)) //increase max guess number by double
-      setMaxAttempts(maxAttempts =>
-        mode == "multiplier"
-          ? int_of_float(Math.round(float_of_int(level + 1) *. difficultyMultiplier))
-          : attemptsLimit
-      ) //increase max attempts based on difficulty for multiplier game mode and set fixed number of attempts for attempts mode
-      setLevel(level => level + 1) //increase level by 1
-      setAttempts(attempts => 0) //set attempts to 0
-      setLevelScore(levelScore => float_of_int(0)) //set level score to 0
     }
   }
 
